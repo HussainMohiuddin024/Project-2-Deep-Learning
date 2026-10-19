@@ -137,3 +137,94 @@ Acknowledgements
 * Intel Image Classification dataset
 * PyTorch and Torchvision
 * Scikit-learn documentation
+
+Week 6 Proposal: Satellite Image Classification (Next Week)
+
+About This Project
+
+This project uses transfer learning with a pretrained ResNet-18 model to classify satellite images into four categories: cloudy, desert, green area, and water. It builds on the Week 5 lab and tests how well features learned from everyday photos work on top-down satellite views.
+
+Proposal Overview
+
+Next week's project applies the transfer learning workflow from Week 5 to satellite imagery. A pretrained ResNet-18 model will be adapted to classify satellite images into four terrain and environment categories using a Kaggle image dataset. The project will test how well ImageNet features transfer to top-down satellite views.
+
+Problem Statement
+
+Can a transfer-learned CNN accurately classify satellite images as cloudy, desert, green area, or water, and which classes does it confuse most?
+
+Proposed Dataset
+
+Dataset: Satellite Image Classification (Kaggle)
+
+Link: https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-classification
+
+This dataset contains 5,631 satellite images in four classes: Cloudy (1,500), Desert (1,131), Green Area (1,500), and Water (1,500). Images are organized in class folders. Since no official train/validation/test split is provided, a stratified split of about 70% training, 15% validation, and 15% testing will be created. Images will be resized to 224x224 and normalized using ImageNet statistics.
+
+Objectives
+
+* Load and explore the satellite images and check class balance.
+* Create a stratified train/validation/test split.
+* Apply augmentation suited to satellite images (horizontal and vertical flips, 90-degree rotations, mild color jitter).
+* Train a pretrained ResNet-18 with a new four-class head (feature extraction), then fine-tune layer4, as in Week 5.
+* Compare ResNet-18 with a second model such as ResNet-50 or EfficientNet-B0.
+* Evaluate using accuracy, precision, recall, F1-score, and a confusion matrix.
+* Analyze misclassified images, especially between visually similar classes.
+
+Planned Methodology
+
+1. Data preparation: stratified split, resizing, augmentation, and ImageNet normalization.
+2. Feature extraction: freeze the pretrained layers and train the new head (Adam, learning rate 0.001).
+3. Fine-tuning: unfreeze layer4 (learning rate 0.0001) and train it with the head (learning rate 0.001).
+4. Model comparison: repeat the best setup with a second architecture.
+5. Evaluation and error analysis on the held-out test set.
+6. Save the final model as resnet18_satellite.pt.
+
+Technologies
+
+* Python
+* PyTorch and Torchvision
+* NumPy
+* Matplotlib
+* Pillow (PIL)
+* Scikit-learn
+* Kaggle Notebooks (GPU)
+
+Evaluation Metrics
+
+Metric	Purpose
+Accuracy	Overall performance
+Macro Precision, Recall, F1-score	Performance with all classes weighted equally
+Per-class F1-score	Shows which terrain types are hardest
+Confusion matrix	Shows which classes are mixed up
+
+Expected Outcomes
+
+* High test accuracy, with fine-tuning improving on feature extraction alone (target to be confirmed after training).
+* A clear comparison between the two models.
+* Error analysis, with attention to green area and water images, which can look similar from above.
+
+Risks and Limitations
+
+* The dataset is small and has only four broad classes.
+* Some images may come from different sources (sensor data mixed with map snapshots), which can affect consistency.
+* ImageNet pretraining uses ground-level photos, which differ from satellite views.
+
+Proposed Timeline
+
+Stage	Task
+Day 1	Download dataset, explore data, create split
+Day 2	Build data pipeline and train feature-extraction baseline
+Day 3	Fine-tune layer4
+Day 4	Train second model and compare
+Day 5	Evaluation, confusion matrix, and error analysis
+Day 6	Write results and save the model
+
+Author
+
+Name: Hussain Mohiuddin
+
+Course/Lab: Week 6 — Project Proposal
+
+Proposal Acknowledgements
+
+* Satellite Image Classification dataset (Kaggle)
