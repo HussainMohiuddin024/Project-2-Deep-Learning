@@ -228,130 +228,161 @@ Course/Lab: Week 6 — Project Proposal
 Proposal Acknowledgements
 
 * Satellite Image Classification dataset (Kaggle)
-  ## Week 6: Intel Image Classification with ResNet-18
+  ## Project 2:Week-6 Satellite Image Classification Using Deep Learning
+
+Author: Hussain Mohiuddin
+Course/Lab: Applied AI, Week 6
+Project Type: Multiclass Image Classification
 
 1. Project Overview
 
-This project classifies natural scene images into six categories using transfer learning with a pretrained ResNet-18 model.
+This project focuses on classifying satellite images into four categories using deep learning and transfer learning. A pretrained ResNet-18 model will be used as the baseline, followed by fine-tuning and comparison with a second architecture.
 
-Classes: Buildings, Forest, Glacier, Mountain, Sea, Street
+The goal is to investigate how well deep learning models distinguish different land and environmental conditions in satellite imagery.
 
-Purpose: To study image classification, dataset quality, data leakage risks, class imbalance, model evaluation, and visual explanations using Grad-CAM.
+2. Dataset
 
-2. Dataset Datasheet
+Dataset Name: Satellite Image Classification
 
-Dataset: Intel Image Classification
+Source: Kaggle
 
-Source: Kaggle dataset by puneet6060.
+Dataset Link: https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-classification
 
-Task: Multiclass image classification.
+Total Images: 5,631
 
-Number of classes: 6
+Classes and Distribution
 
-Training and validation split: 11,695 training images and 2,339 validation images.
+Class	Number of Images
+Cloudy	1,500
+Desert	1,131
+Green Area	1,500
+Water	1,500
+Total	5,631
 
-Test set: 3,000 images.
+The dataset contains four categories organized into class folders. Desert has fewer images than the other classes, so class distribution will be checked before training.
 
-Image properties: RGB images resized to 150 × 150 pixels.
+3. Objectives
 
-Class Distribution
+* Explore satellite images and examine class distribution.
+* Create stratified training, validation, and testing splits.
+* Resize images to 224 × 224 pixels and normalize them using ImageNet statistics.
+* Apply suitable data augmentation, including horizontal and vertical flips, 90-degree rotations, and mild color jitter.
+* Train a pretrained ResNet-18 model using feature extraction.
+* Fine-tune the final ResNet block to improve performance.
+* Compare ResNet-18 with a second architecture, such as ResNet-50 or EfficientNet-B0.
+* Evaluate models using accuracy, precision, recall, Macro-F1, and a confusion matrix.
+* Inspect misclassified images to understand common errors.
+* Save the selected model for future inference.
 
-Class	Training images before validation split
-Buildings	2,191
-Forest	2,271
-Glacier	2,404
-Mountain	2,512
-Sea	2,274
-Street	2,382
+4. Planned Methodology
 
-The dataset has a relatively balanced class distribution. The largest class contains 2,512 images, while the smallest contains 2,191 images.
+Step 1: Data Preparation
 
-Data Quality Audit
+Load the images, inspect class counts, resize them to 224 × 224 pixels, and create a stratified split.
 
-* Exact duplicate files identified: 36.
-* Test images flagged as possible near-duplicates of training images: 19 out of 3,000.
-* The validation split reported zero shared group IDs between training and validation.
-* However, the current grouping appears to assign approximately one group per image. Therefore, this check does not establish subject-level separation.
-* Possible duplicate pairs should be inspected before drawing conclusions about leakage.
+The planned split is approximately 70% training, 15% validation, and 15% testing.
 
-3. Model Card
+For 5,631 images, the approximate counts are:
 
-Model Details
+* Training: 3,942 images
+* Validation: 845 images
+* Testing: 844 images
 
-Architecture: ResNet-18
+Exact counts may vary slightly depending on the splitting method.
 
-Approach: Transfer learning using pretrained ImageNet weights.
+Step 2: Feature Extraction
 
-Training strategy:
+Load pretrained ResNet-18 weights and replace the final classification layer with a new four-class output layer.
 
-1. Train the classification head.
-2. Fine-tune the final ResNet block and classification head.
+Freeze the pretrained feature-extraction layers and train the new classification head using Adam with a learning rate of 0.001.
 
-Input size: 150 × 150 pixels.
+Step 3: Fine-Tuning
 
-Input channels: 3 (RGB).
+Unfreeze the final ResNet block and train it with the classification head.
 
-Saved model: week6_model.pt
+The planned learning rates are:
 
-Evaluation Results
+* Final ResNet block: 0.0001
+* Classification head: 0.001
 
-Metric	Result
-Best validation Macro-F1	0.9302
-Test Macro-F1	0.9152
-Test accuracy	0.914
-Test weighted F1	0.914
+Compare validation performance with the feature-extraction baseline.
 
-The model performs well overall, but its errors are not distributed equally across all classes.
+Step 4: Model Comparison
 
-Important Misclassifications
+Train and evaluate a second architecture using the same dataset splits and evaluation procedure.
 
-The confusion matrix shows that some glacier images are classified as mountains. Some street images are also classified as buildings.
+Compare the models using validation Macro-F1 and other relevant metrics. Select the best model before evaluating the held-out test set.
 
-These errors suggest that visually similar scenes can be difficult to distinguish.
+Step 5: Evaluation and Error Analysis
 
-Grad-CAM Analysis
+Report test accuracy, precision, recall, Macro-F1, per-class performance, and the confusion matrix.
 
-Grad-CAM heatmaps were generated for three correct and three incorrect predictions.
+Inspect incorrect predictions, particularly cases where green areas and water appear visually similar.
 
-In the inspected examples, the incorrect predictions were labelled as street even though their true label was buildings. Some highlighted regions included roads, ground, and surrounding structures.
+Step 6: Save the Model
 
-Initial verdict: Shortcut learning is possible but not confirmed. More experiments are needed to establish whether the model relies on background features instead of relevant building structures.
+Save the selected model weights and the class-label mapping.
 
-Intended Use
+Planned output filename: resnet18_satellite.pt
 
-This model is intended for educational experimentation and scene classification demonstrations.
+5. Technologies
 
-It should not be treated as a safety-critical system or used as the sole basis for consequential decisions.
+* Python
+* PyTorch
+* Torchvision
+* NumPy
+* Matplotlib
+* Pillow (PIL)
+* Scikit-learn
+* Kaggle Notebooks with GPU acceleration
 
-Limitations
+6. Evaluation Metrics
 
-* The model was evaluated on one dataset.
-* Performance on images from other sources has not been established.
-* Similar-looking classes can be confused.
-* The duplicate audit identified potential overlap that requires further investigation.
-* Grad-CAM is an interpretability aid, not proof of the model’s reasoning.
-* The dataset’s licence and annotation process should be checked against the original source before redistribution.
+Metric	Purpose
+Accuracy	Measures the proportion of correct predictions
+Precision	Measures how many predictions for a class are correct
+Recall	Measures how many actual examples of a class are identified
+Macro-F1	Gives equal importance to each class
+Confusion Matrix	Shows which classes are confused with one another
 
-4. Responsible AI Questions
+Macro-F1 is particularly useful because the number of Desert images is lower than the counts for the other classes.
 
-Q1. Who could be harmed, and how?
+7. Expected Outcomes
 
-In this scene-classification setting, incorrect predictions could affect applications such as image organization, mapping, or environmental scene analysis. A wrong class could lead to incorrect labels or downstream decisions. The model should therefore be reviewed before use in consequential applications.
+* A trained satellite image classification model.
+* A comparison between feature extraction and fine-tuning.
+* A performance comparison between two CNN architectures.
+* A confusion matrix and analysis of common classification errors.
+* A saved model suitable for experimentation and future inference.
 
-Q2. Where has the model not been validated?
+These are expected outcomes, not measured results. Final performance will be reported after training and testing.
 
-The model has not been validated on independent datasets, images from different regions, different cameras, or changing environmental conditions. Its generalization to these settings remains unknown.
+8. Risks and Limitations
 
-Q3. What is the human role?
+* The dataset contains a limited number of images compared with large-scale remote-sensing datasets.
+* The class distribution is not perfectly balanced.
+* Images from different sources may have different visual characteristics.
+* ImageNet pretraining may not capture every feature specific to satellite imagery.
+* Performance on unseen geographic regions and different satellite sensors has not yet been established.
 
-A human should review uncertain predictions, inspect important errors, and verify the model’s outputs before they are used in a real application. The model should assist rather than replace appropriate human judgment.
+9. Proposed Timeline
 
-Q4. What evidence would change the conclusions?
+Day	Task
+Day 1	Download dataset, explore images, and create splits
+Day 2	Build the data pipeline and train the feature-extraction baseline
+Day 3	Fine-tune the final ResNet block
+Day 4	Train a second model and compare architectures
+Day 5	Evaluate the selected model and perform error analysis
+Day 6	Document findings and save the final model
 
-Evaluation on an independent dataset, inspection of duplicate pairs, testing on varied backgrounds, and controlled experiments that mask suspected shortcut regions would provide stronger evidence about generalization and shortcut learning.
+10. Conclusion
 
-5. Conclusion
+This project will explore the use of transfer learning for satellite image classification across four environmental categories. By comparing feature extraction, fine-tuning, and a second model architecture, the project aims to identify a reliable baseline and understand its strengths and limitations.
 
-The ResNet-18 model achieved a test Macro-F1 of 0.9152 on the Intel Image Classification dataset. The dataset audit identified exact duplicates and possible near-duplicates, while Grad-CAM highlighted examples that deserve further investigation.
+The final conclusions will be based on measured test results, class-wise performance, and an analysis of misclassified images.
 
-The main lesson is that a strong test score alone is not enough. Data quality, leakage risks, class-specific errors, and model explanations must also be examined.
+References
+
+* Dataset: https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-classification
+* PyTorch: https://pytorch.org/
+* Torchvision: https://pytorch.org/vision/stable/index.html
