@@ -1,5 +1,5 @@
 # Project-2-Deep-Learning
-Transfer Learning with ResNet-18
+## Week-5-Transfer Learning with ResNet-18
 
 Project Overview
 
@@ -228,3 +228,130 @@ Course/Lab: Week 6 — Project Proposal
 Proposal Acknowledgements
 
 * Satellite Image Classification dataset (Kaggle)
+  ## Week 6: Intel Image Classification with ResNet-18
+
+1. Project Overview
+
+This project classifies natural scene images into six categories using transfer learning with a pretrained ResNet-18 model.
+
+Classes: Buildings, Forest, Glacier, Mountain, Sea, Street
+
+Purpose: To study image classification, dataset quality, data leakage risks, class imbalance, model evaluation, and visual explanations using Grad-CAM.
+
+2. Dataset Datasheet
+
+Dataset: Intel Image Classification
+
+Source: Kaggle dataset by puneet6060.
+
+Task: Multiclass image classification.
+
+Number of classes: 6
+
+Training and validation split: 11,695 training images and 2,339 validation images.
+
+Test set: 3,000 images.
+
+Image properties: RGB images resized to 150 × 150 pixels.
+
+Class Distribution
+
+Class	Training images before validation split
+Buildings	2,191
+Forest	2,271
+Glacier	2,404
+Mountain	2,512
+Sea	2,274
+Street	2,382
+
+The dataset has a relatively balanced class distribution. The largest class contains 2,512 images, while the smallest contains 2,191 images.
+
+Data Quality Audit
+
+* Exact duplicate files identified: 36.
+* Test images flagged as possible near-duplicates of training images: 19 out of 3,000.
+* The validation split reported zero shared group IDs between training and validation.
+* However, the current grouping appears to assign approximately one group per image. Therefore, this check does not establish subject-level separation.
+* Possible duplicate pairs should be inspected before drawing conclusions about leakage.
+
+3. Model Card
+
+Model Details
+
+Architecture: ResNet-18
+
+Approach: Transfer learning using pretrained ImageNet weights.
+
+Training strategy:
+
+1. Train the classification head.
+2. Fine-tune the final ResNet block and classification head.
+
+Input size: 150 × 150 pixels.
+
+Input channels: 3 (RGB).
+
+Saved model: week6_model.pt
+
+Evaluation Results
+
+Metric	Result
+Best validation Macro-F1	0.9302
+Test Macro-F1	0.9152
+Test accuracy	0.914
+Test weighted F1	0.914
+
+The model performs well overall, but its errors are not distributed equally across all classes.
+
+Important Misclassifications
+
+The confusion matrix shows that some glacier images are classified as mountains. Some street images are also classified as buildings.
+
+These errors suggest that visually similar scenes can be difficult to distinguish.
+
+Grad-CAM Analysis
+
+Grad-CAM heatmaps were generated for three correct and three incorrect predictions.
+
+In the inspected examples, the incorrect predictions were labelled as street even though their true label was buildings. Some highlighted regions included roads, ground, and surrounding structures.
+
+Initial verdict: Shortcut learning is possible but not confirmed. More experiments are needed to establish whether the model relies on background features instead of relevant building structures.
+
+Intended Use
+
+This model is intended for educational experimentation and scene classification demonstrations.
+
+It should not be treated as a safety-critical system or used as the sole basis for consequential decisions.
+
+Limitations
+
+* The model was evaluated on one dataset.
+* Performance on images from other sources has not been established.
+* Similar-looking classes can be confused.
+* The duplicate audit identified potential overlap that requires further investigation.
+* Grad-CAM is an interpretability aid, not proof of the model’s reasoning.
+* The dataset’s licence and annotation process should be checked against the original source before redistribution.
+
+4. Responsible AI Questions
+
+Q1. Who could be harmed, and how?
+
+In this scene-classification setting, incorrect predictions could affect applications such as image organization, mapping, or environmental scene analysis. A wrong class could lead to incorrect labels or downstream decisions. The model should therefore be reviewed before use in consequential applications.
+
+Q2. Where has the model not been validated?
+
+The model has not been validated on independent datasets, images from different regions, different cameras, or changing environmental conditions. Its generalization to these settings remains unknown.
+
+Q3. What is the human role?
+
+A human should review uncertain predictions, inspect important errors, and verify the model’s outputs before they are used in a real application. The model should assist rather than replace appropriate human judgment.
+
+Q4. What evidence would change the conclusions?
+
+Evaluation on an independent dataset, inspection of duplicate pairs, testing on varied backgrounds, and controlled experiments that mask suspected shortcut regions would provide stronger evidence about generalization and shortcut learning.
+
+5. Conclusion
+
+The ResNet-18 model achieved a test Macro-F1 of 0.9152 on the Intel Image Classification dataset. The dataset audit identified exact duplicates and possible near-duplicates, while Grad-CAM highlighted examples that deserve further investigation.
+
+The main lesson is that a strong test score alone is not enough. Data quality, leakage risks, class-specific errors, and model explanations must also be examined.
