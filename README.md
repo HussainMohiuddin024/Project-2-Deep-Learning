@@ -246,7 +246,7 @@ Dataset Name: Satellite Image Classification
 
 Source: Kaggle
 
-Dataset Link: https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-classification
+Dataset Link:https://www.kaggle.com/datasets/puneet6060/intel-image-classification
 
 Total Images: 5,631
 
@@ -383,6 +383,6 @@ The final conclusions will be based on measured test results, class-wise perform
 
 References
 
-* Dataset: https://www.kaggle.com/datasets/mahmoudreda55/satellite-image-classification
+* Dataset: https://www.kaggle.com/datasets/puneet6060/intel-image-classification
 * PyTorch: https://pytorch.org/
 * Torchvision: https://pytorch.org/vision/stable/index.html
